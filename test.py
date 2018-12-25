@@ -9,10 +9,13 @@ import json
 from tomorrow3 import threads
 from pymysql import connect
 from DBUtils.PooledDB import PooledDB
-
+from sqlite3 import connect as sqc
 pool = PooledDB(pymysql, 10, host="127.0.0.1", user="test", passwd="", db="wenben_book", port=8889)
-con = connect("localhost", "test", "", "wenben_book", 8889)
-
+#con = connect("localhost", "test", "", "wenben_book", 8889)
+con3=sqc("book.db")
+try:
+    con3.cursor().execute("create table movie(url varchar(30) not null,data text null,constraint movie_pk primary key (url))")
+except:pass
 
 def generate_headers():
     return {"user-agent": user_agent.generate_user_agent()}
@@ -22,7 +25,8 @@ def generate_cookie():
     return {"bid": "".join(random.sample(string.ascii_letters + string.digits, 11))}
 
 
-def exesql(con: con, sql: str):
+def exesql(con: con3, sql: str):
+
     cur = con.cursor()
     cur.execute(sql)
     cur.close()
@@ -41,7 +45,7 @@ def get_bs(url: str, headers: dict, cookie: dict):
     data = p[0].get_text()
 
     ul = json.loads(data, strict=False)["url"]
-    exesql(con, f"insert into test values ('{ul}','{data}')")
+    exesql(con3, f"insert into test values ('{ul}','{data}')")
 
 
 for page in range(1, 10000):
