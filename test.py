@@ -10,7 +10,7 @@ from tomorrow3 import threads
 from pymysql import connect
 from DBUtils.PooledDB import PooledDB
 from sqlite3 import connect as sqc
-pool = PooledDB(pymysql, 10, host="127.0.0.1", user="test", passwd="", db="wenben_book", port=8889)
+#pool = PooledDB(pymysql, 10, host="127.0.0.1", user="test", passwd="", db="wenben_book", port=8889)
 #con = connect("localhost", "test", "", "wenben_book", 8889)
 con3=sqc("book.db")
 try:
