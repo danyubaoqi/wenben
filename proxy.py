@@ -8,4 +8,4 @@ class Proxy:
         return data
 if __name__ == '__main__':
     a=Proxy()
-    print(len(a.get_proxy()))
+    print(a.get_proxy())
