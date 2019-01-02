@@ -1,29 +1,52 @@
+import time
+
 import pymysql
 import json
-con3 = pymysql.connect("localhost", "test", "", "wenben_book", 8889)
-sql="select * from movie"
-cur=con3.cursor()
-cur.execute(sql)
-data=cur.fetchall()
-jsdata=json.loads(data[0][1])
-print(jsdata)
-name=jsdata["name"]#str
-url=data[0][0]#str
-image=jsdata["image"]#str
-director=jsdata["director"]
-#list[dict[type,url,name]]
-actor=jsdata["actor"]
-#list[dict[type,url,name]]
-author=jsdata["author"]
-#list[dict[type,url,name]]
-datePublished=jsdata["datePublished"]
-#time
-duration=jsdata["duration"]
-#list
-description=jsdata["description"]
-#str
-aggregateRating=jsdata["aggregateRating"]
-#dict[@type,ratingCount,bestRationg,worseRatingratingValue]
-for i in jsdata:
-    print(i)
-    print(jsdata[i])
+from tomorrow3 import threads
+from DBUtils.PooledDB import PooledDB
+print("开始创建连接")
+pool = PooledDB(pymysql, 15, host="localhost", user="root", passwd="168168", db="movie", port=3306)
+
+
+@threads(15)
+def dosql(sql: str):
+    try:
+
+        con = pool.connection()
+        cur = con.cursor()
+
+        cur.execute(sql)
+        cur.close()
+        con.commit()
+        con.close()
+
+    except Exception as e:
+        print(e)
+
+
+if __name__ == '__main__':
+    print("开始")
+    time.sleep(3)
+    con = pool.connection()
+    cur = con.cursor()
+    cur.execute("select * from tmdb_5000_credits")
+    datas = cur.fetchall()
+    con.close()
+
+    movieid = [x[0] for x in datas]
+    datas = [x[2] for x in datas]
+    k = -1
+    for i in range(100):
+        try:
+            k+=1
+            data = json.loads(datas[i])
+            for j in data:
+
+                # sql=f'insert into companies values ({j["id"]},"{j["name"]}")'
+                # dosql(sql)
+                sql=f'insert into actor values ({j["id"]},"{j["name"]}",{j["gender"]})'
+                dosql(sql)
+            print(i)
+        except Exception as e:
+            print(e)
+            continue

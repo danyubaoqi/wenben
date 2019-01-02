@@ -1,0 +1,17 @@
+Adventure
+Fantasy
+Animation
+Drama
+Horror
+Action
+Comedy
+History
+Western
+Thriller
+Crime
+Science Fiction
+Mystery
+Music
+Romance
+Family
+War
